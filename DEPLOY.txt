@@ -1,0 +1,16 @@
+DEPLOY ON RAILWAY (free)
+=======================
+1. Create a new GitHub repo (e.g. apple-disease-web), upload everything
+   from this folder to it (app.py, requirements.txt, railway.toml,
+   templates/, the two .pt files).
+2. Go to railway.app -> New Project -> Deploy from GitHub repo ->
+   pick the repo.
+3. Railway auto-detects Python (NIXPACKS) and starts the app with gunicorn.
+   First boot downloads the model backbone (~25 MB), takes a minute.
+4. Open the public URL Railway gives you -> upload a leaf photo.
+
+Notes:
+- The app respects Railway's $PORT automatically.
+- /health endpoint for Railway health checks.
+- Free tier: the app sleeps when idle; first visit after sleep is slow.
+- 10 MB upload limit per photo.

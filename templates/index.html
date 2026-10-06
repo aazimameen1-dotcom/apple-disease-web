@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apple Disease Classifier</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 560px;
+         margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+  h1 { font-size: 1.5rem; }
+  .card { border: 1px solid #ddd; border-radius: 12px; padding: 1.25rem;
+          margin-top: 1rem; }
+  .error { color: #b00020; margin-top: 1rem; }
+  .bar-row { display: flex; align-items: center; gap: .5rem; margin: .35rem 0; }
+  .bar-row .name { width: 11rem; font-size: .9rem; }
+  .bar-row .pct { width: 3.5rem; text-align: right; font-size: .9rem; }
+  .track { flex: 1; background: #eee; border-radius: 6px; height: 10px; }
+  .fill { background: #2e7d32; border-radius: 6px; height: 10px; }
+  .top { font-size: 1.25rem; font-weight: 700; margin: .5rem 0; }
+  button { background: #2e7d32; color: #fff; border: 0; border-radius: 8px;
+           padding: .6rem 1.2rem; font-size: 1rem; cursor: pointer; }
+  select, input[type=file] { font-size: 1rem; margin: .4rem 0; }
+  .note { color: #555; font-size: .85rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<h1>&#127823; Apple Disease Classifier</h1>
+<p>Upload a photo of an apple leaf and the model predicts the disease.</p>
+
+<div class="card">
+<form action="/predict" method="post" enctype="multipart/form-data">
+  <div>
+    <label for="photo">Leaf photo:</label><br>
+    <input type="file" id="photo" name="photo" accept="image/*" required>
+  </div>
+  <div>
+    <label for="model">Model:</label><br>
+    <select id="model" name="model">
+      {% for key, (fname, label) in models.items() %}
+      <option value="{{ key }}" {% if active_model == key %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div style="margin-top:.8rem"><button type="submit">Classify</button></div>
+</form>
+</div>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+{% if result %}
+<div class="card">
+  <div class="top">{{ result.top }} &mdash; {{ result.confidence }}</div>
+  <div class="note" style="margin:0 0 .6rem">Model: {{ result.model_label }}</div>
+  {% for name, pct, w in result.bars %}
+  <div class="bar-row">
+    <span class="name">{{ name }}</span>
+    <span class="track"><span class="fill" style="display:block;width:{{ w }}%"></span></span>
+    <span class="pct">{{ pct }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<p class="note">Research prototype for a semester project. Predictions on real-world
+photos are approximate (field test ~61%); lab-style leaf photos score ~92%.</p>
+</body>
+</html>
